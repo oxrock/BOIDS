@@ -52,14 +52,11 @@ public class revisedBoid : MonoBehaviour
                 if (Vector3.Distance(transform.position, b.transform.position) < alignDistance)
                 {
                     alignForce += b.momentum;
-                    //alignForce += b.transform.rotation.eulerAngles;
-                    //this should probably be chance to reference their momentum, for now it can possibly be estimated to equal their rotation however
                     count++;
                 }
             }
 
         }
-        //alignForce = zeroCheck(alignForce);
         if (count > 0)
         {
             alignForce /= count;
@@ -118,22 +115,18 @@ public class revisedBoid : MonoBehaviour
         position = new Vector3(Random.Range(-fieldSize*2, fieldSize * 2), Random.Range(-fieldSize, fieldSize), Random.Range(-fieldSize, fieldSize));
         transform.position = position;
         randomRotate();
-        //boundryTarget = new Vector3(0, 0, 0);
         momentum = transform.forward;
         alignDistance = singleton.instance.alignDistance;
         cohesionDistance = singleton.instance.cohesionDistance;
         avoidanceDistance = singleton.instance.alignDistance;
         momMagnitude = singleton.instance.momMag;
         settingMagnitudes = singleton.instance.setMag;
-        //flightSpeed = Random.Range(2f,4f);
     }
 
 
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-        //enforceBoundries();
         Vector3 changes = new Vector3(0,0,0);
         align();
         cohesion();
@@ -147,50 +140,9 @@ public class revisedBoid : MonoBehaviour
         momentum = normalized*momMagnitude;
         if (momentum != Vector3.zero)
         {
-            //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(momentum, Vector3.up), 1);
             transform.rotation = Quaternion.LookRotation(normalized, Vector3.up);
-            //print(momentum);
         }
-        else {
-            //print("zero");
-        }
-
-
-        
-
         transform.position += normalized * (flightSpeed * Time.fixedDeltaTime);
 
-    }
-
-
-
-    void enforceBoundries()
-    {
-        if (transform.position.x > fieldSize)
-        {
-            transform.position = new Vector3(-fieldSize, transform.position.y, transform.position.z);
-        }
-        else if (transform.position.x < -fieldSize)
-        {
-            transform.position = new Vector3(fieldSize, transform.position.y, transform.position.z);
-        }
-
-        if (transform.position.y > fieldSize)
-        {
-            transform.position = new Vector3(transform.position.x, -fieldSize, transform.position.z);
-        }
-        else if (transform.position.y < -fieldSize)
-        {
-            transform.position = new Vector3(transform.position.x, fieldSize, transform.position.z);
-        }
-
-        if (transform.position.z > fieldSize)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, -fieldSize);
-        }
-        else if (transform.position.z < -fieldSize)
-        {
-            transform.position = new Vector3(transform.position.x, transform.position.y, fieldSize);
-        }
     }
 }
